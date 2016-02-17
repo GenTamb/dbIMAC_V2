@@ -1,0 +1,111 @@
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('ajax-loader.gif') 
+                50% 50% 
+                no-repeat;
+}
+body.loading {
+    overflow: hidden;   
+}
+body.loading .modal {
+    display: block;
+}
+
+
+
+.popUP{
+    display:none;
+    position:fixed;
+    z-index: 1000;
+    top:40%;
+    left:40%;
+    width:250px;
+    height: 250px;
+    background: rgba( 255, 255, 255, .8 ) ;
+    border:2px solid #a1a1a1;
+    border-radius: 20px;
+}
+#noteContent{
+    margin:5px;
+}
+#closePOPUP{
+    position: relative;
+    margin-top:180px;
+    margin-left:100px;
+}
+
+.defaultWidth{
+    width:350px;
+}
+.border1px{
+    border:1px solid black;
+}
+#loginForm{
+    margin-top:50px;
+}
+form{
+    margin:20px;
+}
+#bodyPage{
+    margin-top:50px;
+}
+@media (max-width: 767px) {
+ #sideLeftMenu{
+        border: none;
+    }
+}
+@media (min-width:768px){
+    #sideLeftMenu{
+    border-right: 1px solid black;   
+    }
+}
+
+ul{
+    list-style-type:none;
+}
+.filtro{
+    width:6em;
+}
+#filter{
+    padding-top:20px;
+}
+#filters{
+    position:relative;
+    right:40px;
+}
+#cercaXdata{
+    width:6em;
+}
+#cercaXdataRange{
+    width:6em;
+}
+#rangeDiv{
+    display:none;
+}
+#adminConsole{
+    margin-top:20px;
+}
+#logout{
+    margin-top:20px;
+}
+.nascosto{
+    display:none; 
+}
+.defwidth{
+    width:6em;
+}
+#hintContent{
+    width:20em;
+    z-index: 9999;
+}
+.hintLI{
+    text-decoration: underline;
+    color: #33cc33;
+}
