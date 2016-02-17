@@ -1,5 +1,5 @@
 # dbIMAC_V2
-Gestionale per procedura IMAC
+Gestionale per procedura IMAC - Installazione Movimentazione Aggiunta Censimento
 
 STATO AVANZAMENTO LAVORI: 70%
 LINGUA PROGETTO: ITALIANA 
