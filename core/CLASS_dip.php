@@ -38,6 +38,50 @@ class DIPENDENTE
         return $fine;
     }
     
+   public function stampaTabellaDIPxEdit($token,$param)
+    {
+        if($param=='matricola')
+                $query="SELECT matricola,cognome,nome FROM dipendenti WHERE matricola LIKE '".$token."%'";
+        else if($param=='cognome')
+                 $query="SELECT matricola,cognome,nome FROM dipendenti WHERE cognome LIKE '".$token."%'";
+        
+        if(!$res=$this->DBconn->query($query)) echo $this->DBconn->error;
+        else
+        {
+            if($res->num_rows>=1)
+            {
+                echo "<div id='dipList' class='table-responsive'>
+                          <table class='table'>
+                             <thead>
+                                 <tr>
+                                 <th>MATRICOLA</th><th>Nuova Matricola</th><th>COGNOME</th><th>NOME</th><th>EDIT</th><th>DELETE</th>
+                                 </tr>
+                             </thead>
+                             <tbody>";
+                while($row=$res->fetch_assoc())
+                {
+                        echo "<tr>";
+                        echo "<td><span class='MATRICOLAUTENTE' id='matUtenteRec'>".$row['matricola']."</span></td>";
+                        echo "<td><button id='newMatButton' class='btn btn-sm btn-warning'>V</button>
+                                  <input type='text' id='newMatToAdd' class='nascosto'>
+                              </td>";
+                        echo "<td><input type='text' class='COGNOMEUTENTE' id='cognomeUtenteRec' value='".$row['cognome']."'></td>";
+                        echo "<td><input type='text' class='NOMEUTENTE' id='nomeUtenteRec' value='".$row['nome']."'></td>";
+                        echo "<td><button id='EDITdiplist' class='btn btn-sm btn-info DIP-CD'>V</button></td>";
+                        echo "<td><button id='DELdiplist' class='btn btn-sm btn-danger DIP-CD'>X</button></td>";
+                        echo "</tr>";
+                }
+                     echo "</tbody>
+                          </table>
+                          </div>";
+            }
+            else
+            {
+                echo "<span class='alert alert-danger'>Nessun risultato per il filtro impostato!</span>";
+            }
+        }
+    }
+    
     public function getDipByCognome($cognome)
     {
         $query="SELECT matricola,nome,cognome FROM dipendenti WHERE cognome LIKE '".$cognome."%'";

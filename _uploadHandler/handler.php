@@ -4,7 +4,7 @@ require_once("extractP7M.php");
 session_start();
 echo "<!DOCTYPE html>
       <head>
-      <title>DB IMAC V2 - UPLOAD Automatico</title>
+      <title>DB IMAC V2 - UPLOAD</title>
       <meta charset='utf-8'>
       <meta name='viewport' content='width=device-width, initial-scale=1'>
       <link rel='stylesheet' href='../style/bootstrap.min.css'>
@@ -17,15 +17,18 @@ echo "<!DOCTYPE html>
       <script src='../js/jquery-ui.min.js'></script>
     </head>
     <body>";
-if(($_GET['upload'])=='new')
+if(isset($_GET['upload']))
 {
     echo "
      <form id='uploader'  method='post' action='handler.php' enctype='multipart/form-data'>
-        <input id='file' name='uppati[]' type='file' multiple='multiple'>
+        <input id='file' name='uppati[]' type='file'";
+        if($_GET['mode']!='manual') echo "multiple='multiple'";
+    echo ">
         <input type='submit' id='sendAUTO' name='send' value='carica'>
      </form>";
 }
 
+//submit send è inviato da handler.php stesso
 if(isset($_POST['send']))
 {
     $counter=0;   
@@ -40,7 +43,7 @@ if(isset($_POST['send']))
             //$uploadfile=str_replace(" ","",$uploadfile);
             if (move_uploaded_file($_FILES['uppati']['tmp_name'][$file], $uploadfile))
             {   
-             echo "<div class='alert alert-success'>Uppato il file: ".$_FILES['uppati']['name'][$file]."</div>";
+             echo "<div class='alert alert-success'>Uppato il file: <span id='uploadedFileName'>".$_FILES['uppati']['name'][$file]."</span></div>";
              
              if($_FILES['uppati']['type'][$file]=='application/pkcs7-mime') //se è p7m
              {
@@ -48,20 +51,23 @@ if(isset($_POST['send']))
                       echo "<div class='alert alert-danger'>errore estrazione file: ".$_FILES['uppati']['name'][$file]."</div>"; //altrimenti messaggio di errore
                else $counter++;       
              }
-             else if($_FILES['uppati']['type'][$file]=='application/excel' ||
+             else /* if($_FILES['uppati']['type'][$file]=='application/excel' ||
                      $_FILES['uppati']['type'][$file]=='application/vnd.ms-excel' ||
                      $_FILES['uppati']['type'][$file]=='application/x-excel' ||
-                     $_FILES['uppati']['type'][$file]=='application/x-msexcel') //se è xls
+                     $_FILES['uppati']['type'][$file]=='application/x-msexcel') //se è xls*/
              {
                 if(!moveWhatEverExt($_FILES['uppati']['name'][$file],$uploadDirTemp,$uploadDirDest))  //sposto in job
                      echo "<div class='alert alert-danger'>errore spostamento file ".$_FILES['uppati']['name'][$file]."</div>";  //altrimenti messaggio di errore
-                else $counter++;     
+                else $counter++;
+                if(getFileExt($_FILES['uppati']['name'][$file])!='.xls') echo "<div class='alert alert-warning'>il file ".$_FILES['uppati']['name'][$file]." ha un'estensione generica</div>";
              }
-             else  //altrimenti, se è altro file, avviso e cancello
+             /*else //altrimenti, se è altro file, avviso
              {
-                echo "<div class='alert alert-warning'>File ".$_FILES['uppati']['name'][$file]." non supportato per l'upload automatico!</div>";
-                unlink($uploadDirTemp.$_FILES['uppati']['name'][$file]);
-             }
+                if(!moveWhatEverExt($_FILES['uppati']['name'][$file],$uploadDirTemp,$uploadDirDest)) //sposto in job
+                     echo "<div class='alert alert-warning'>File ".$_FILES['uppati']['name'][$file]." generico</div>";
+                else $counter++;:     
+                //unlink($uploadDirTemp.$_FILES['uppati']['name'][$file]);
+             }*/
             }
             else
             {
@@ -73,6 +79,7 @@ if(isset($_POST['send']))
     echo "<button class='btn btn-lg btn-info' id='closeHandler'>Chiudi</button>";
     
 }
+
 echo "</body>
       </html>";
 

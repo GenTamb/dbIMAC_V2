@@ -20,7 +20,16 @@ function echoResponse($es,$msg)
     echo json_encode($response);
 }
 
+function moveAndRename($fileName,$newFileName,$origin,$destination)
+{
+    if(rename($origin.$fileName,$destination.$newFileName)) return true;
+    else return false;   
+}
 
+function getFileExt($fileName)
+{
+    return substr($fileName,-4);
+}
 /**************************************************************************************************************************************************
  *                                                          script generali                                                                       *
  **************************************************************************************************************************************************/
@@ -236,6 +245,11 @@ if(isset($_POST['cercaXrange']))
  *                               admin script                            *
  *************************************************************************/
 
+ 
+/**********************************
+ *       IMAC management NEW      *
+ **********************************/
+
 if(isset($_POST['cercaUtenteByMat']))
 {
     require_once("CLASS_dip.php");
@@ -266,8 +280,8 @@ if(isset($_POST['deleteTempFiles']))
 {
     require_once "db.php";
     
-    $jobDir=ROOT."\\_uploadHandler\\temp_".$_SESSION['username']."\\";
-    $tempDir=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
+    $tempDir=ROOT."\\_uploadHandler\\temp_".$_SESSION['username']."\\";
+    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
     $fileList_jobDir=array_slice(scandir($jobDir),2);
     $fileList_tempDir=array_slice(scandir($tempDir),2);
     foreach($fileList_jobDir as $file_jobDir) unlink($jobDir.$file_jobDir);
@@ -276,15 +290,313 @@ if(isset($_POST['deleteTempFiles']))
     rmdir($tempDir);
     $res[]="deleted";
     echo json_encode($res);
+        
+}
+
+if(isset($_POST['deleteSingleTempFile']))
+{
+    require_once "db.php";
+    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
+    $fileName=$_POST['fileName'];
+    if(unlink($jobDir.$fileName)) echoResponse('yes','Cancellato');
+    else echoResponse('no','Errore');
+}
+
+if(isset($_POST['addRecord']))
+{
+    require_once "db.php";
+    require_once "CLASS_imac.php";
+    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
+    $recDir=ROOT."\\recordFile\\";
     
+    $ticket=sanitizeInput($_POST['ticket']);
+    $matUtente=sanitizeInput($_POST['matUtente']);
+    $tipoRichiesta=$_POST['tipoRichiesta'];
+    if($_POST['fileName']!='Upload') $fileName=sanitizeInput($_POST['fileName']);
+    else $fileName='';
+    $note=sanitizeInput($_POST['note']);
+    $dataApertura=sanitizeInput($_POST['dataApertura']);
+    
+    if($dataApertura=='') $dataApertura=Date('Y-m-d');
+    
+    $splitData=explode("-",$dataApertura);
+    
+    $error=false;
+    
+    $recDir=$recDir.$splitData[0]."\\".$splitData[1]."\\".$splitData[2]."\\";
+    
+    if(!is_dir($recDir))
+    {
+        if(!(mkdir($recDir, 0777, true)))
+        {
+            $error=true;
+            $msg='Errore creazione cartella';
+        }
+    }
+    $relativePath='recordFile/'.$splitData[0].'/'.$splitData[1].'/'.$splitData[2].'/';
+    
+    if(!$error)
+    {
+        $imac=new IMAC();
+        $imac->ticket=$ticket;
+        $imac->matUtente=$matUtente;
+        $imac->stato='APERTO';
+        $imac->tipoRichiesta=$tipoRichiesta;
+        if($fileName!='') $imac->pathFile='notDefinedYet';
+        else $imac->pathFile='';
+        $imac->note=$note;
+        $imac->data=$dataApertura;
+    }
+    if(!$error)
+    {
+        if($imac->inserisciImac()) $msg=$imac->nProtocollo;
+        else
+        {
+            $error=true;
+            $msg=$imac->DBconn->error;
+        }
+    }
+    $ext=getFileExt($fileName);
+    $newFileName="N".$msg."-Mat_".$matUtente."-Data_".$dataApertura.$ext;
+    if(!$error)
+    {
+        if($fileName!='') $imac->pathFile=$relativePath.$newFileName;
+        if(!$imac->aggiornaImac()) $error=true;
+    }
+    if(!$error)
+    {
+        if($fileName!='')
+        {
+            if(!(moveAndRename($fileName,$newFileName,$jobDir,$recDir)))
+            {
+                $error=true;
+                $msg='Errore spostamento file';
+            }
+        }
+    }
+    
+    (!$error) ? $status="yes" : $status="no";
+    echoResponse($status,$msg);  
+}
+
+/**********************************
+ *      IMAC management EDIT      *
+ **********************************/
+
+if(isset($_POST['cercaXnprocolloEDIT']))
+{
+    require_once("CLASS_imac.php");
+    $imac=new IMAC();
+    echo $imac->stampaImacDaParametroXedit($_POST['nprotocollo'],"protocollo");
+}
+
+if(isset($_POST['cercaXticketEDIT']))
+{
+    require_once("CLASS_imac.php");
+    $imac=new IMAC();
+    echo $imac->stampaImacDaParametroXedit($_POST['ticket'],"ticket");
+}
+
+if(isset($_POST['cercaXmatricolaEDIT']))
+{
+    require_once("CLASS_imac.php");
+    $imac=new IMAC();
+    echo $imac->stampaImacDaParametroXedit($_POST['matricola'],"matricola");
+}
+
+if(isset($_POST['editRecord']))
+{
+    require_once "db.php";
+    require_once "CLASS_imac.php";
+    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
+    $recDir=ROOT."\\recordFile\\";
+    
+    $imac=new IMAC();
+    $nProtocollo=sanitizeInput($_POST['nProtocollo']);
+    $ticket=sanitizeInput($_POST['ticket']);
+    $matUtente=sanitizeInput($_POST['matUtente']);
+    $stato=$_POST['stato'];
+    $tipoRichiesta=$_POST['tipoRichiesta'];
+    $newPathFile=$_POST['fileName'];
+    $note=sanitizeInput($_POST['note']);
+    $dataApertura=$_POST['dataApertura'];
+    
+    $nProtocollo=str_replace("N","",$nProtocollo);
+    $error=false;
+    //istanzio imac
+    if(!$imac->istanziaImacByProt($nProtocollo))
+    {
+        $error=true;
+        $msg='Errore: imac non trovata';
+    }
+    if(!$error)
+    {
+         //modifico nuovi valori
+        $imac->ticket=$ticket;
+        $imac->matUtente=$matUtente;
+        $imac->stato=$stato;
+        $imac->tipoRichiesta=$tipoRichiesta;
+        $imac->note=$note;
+        $imac->data=$dataApertura;
+    }
+   
+    //se nuovo file, sostituisci al vecchio
+    if(!$error && $newPathFile!='')
+    {
+         if($imac->pathFile!='')
+         {
+            $oldFilePATHandName=$imac->pathFile;
+                   
+            $oldFileNameChunk=explode("/",$oldFilePATHandName);
+            $absolutePath_original=$recDir.$oldFileNameChunk[1]."\\".$oldFileNameChunk[2]."\\".$oldFileNameChunk[3]."\\";
+            $originalFileName=$oldFileNameChunk[4];
+            $originalExt=getFileExt($originalFileName);
+            $originalFileNameWOExt=str_replace($originalExt,"",$originalFileName);
+            
+            $newFileExt=getFileExt($newPathFile);
+            
+            if(!unlink($absolutePath_original.$originalFileName))
+            {
+                $error=true;
+                $msg="Errore cancellazione file ".$absolutePath_original.$originalFileName;
+            }
+            if(!(moveAndRename($newPathFile,$originalFileNameWOExt.$newFileExt,$jobDir,$absolutePath_original)))
+            {
+                $error=true;
+                $msg='Errore spostamento nuovo file';
+            }
+            if(!$error)
+            {
+                $newFilePATHandName=str_replace($originalExt,$newFileExt,$oldFilePATHandName);
+                $imac->pathFile=$newFilePATHandName;
+            }
+         }
+        else
+        {
+            $splitData=explode("-",$dataApertura);
+            $recDir=$recDir.$splitData[0]."\\".$splitData[1]."\\".$splitData[2]."\\";
+     
+            if(!is_dir($recDir))
+            {
+                if(!(mkdir($recDir, 0777, true)))
+                {
+                    $error=true;
+                    $msg='Errore creazione cartella';
+                }
+            }
+            $relativePath='recordFile/'.$splitData[0].'/'.$splitData[1].'/'.$splitData[2].'/';
+            $newFileExt=getFileExt($newPathFile);
+            $newFileName="N".$imac->nProtocollo."-Mat_".$imac->matUtente."-Data_".$imac->data.$newFileExt;
+            if(!$error)
+            {
+                $imac->pathFile=$relativePath.$newFileName;
+                
+            }
+            if(!(moveAndRename($newPathFile,$newFileName,$jobDir,$recDir)))
+            {
+                $error=true;
+                $msg='Errore spostamento nuovo file';
+            }
+            
+        } 
+    }
+       
+    if(!$error)
+    {
+        $imac->aggiornaImac();
+        $msg="Aggiornata imac N".$imac->nProtocollo;
+    }
+    (!$error) ? $status="yes" : $status="no";
+    echoResponse($status,$msg);  
     
 }
 
+if(isset($_POST['deleteIMAC']))
+{
+    require_once "db.php";
+    require_once "CLASS_imac.php";
+    $recDir=ROOT."\\recordFile\\";
+    $nProtocollo=$_POST['nProtocollo'];
+    $nProtocollo=str_replace("N","",$nProtocollo);
+    
+    $imac=new IMAC();
+    $imac->istanziaImacByProt($nProtocollo);
+    $error=false;
+    if($imac->pathFile!='')
+    {
+        $oldFilePATHandName=$imac->pathFile;     
+        $oldFileNameChunk=explode("/",$oldFilePATHandName);
+        $absolutePath_original=$recDir.$oldFileNameChunk[1]."\\".$oldFileNameChunk[2]."\\".$oldFileNameChunk[3]."\\";
+        $originalFileName=$oldFileNameChunk[4];
 
+        if(!unlink($absolutePath_original.$originalFileName))
+        {
+            $error=true;
+            $msg="Errore cancellazione file ".$absolutePath_original.$originalFileName;
+        }
+    }
+    if(!$imac->cancellaImac())
+    {
+        $error=true;
+        $msg='Errore cancellazione da DB';
+    }
+    
+    (!$error) ? $status="yes" : $status="no";
+    echoResponse($status,$msg); 
+}
 
+/**********************************
+ *      DIPENDENTI management     *
+ **********************************/
 
+if(isset($_POST['addDip']))
+{
+    require_once("CLASS_dip.php");
+    $matricola=sanitizeInput($_POST['matricola']);
+    $cognome=sanitizeInput($_POST['cognome']);
+    $nome=sanitizeInput($_POST['nome']);
+    
+    $dipendente=NEW DIPENDENTE();
+    $dipendente->matricola=$matricola;
+    $dipendente->cognome=$cognome;
+    $dipendente->nome=$nome;
+    
+    if(!$dipendente->insertDip()) echoResponse('no',$dipendente->DBconn->error);
+    else echoResponse('yes','Aggiunto dipendente con matricola '.$dipendente->matricola);
+}
 
+if(isset($_POST['cercaDIPxMatricola']))
+{
+    require_once("CLASS_dip.php");
+    $matricola=sanitizeInput($_POST['matricola']);
+    
+    $dipendente=new DIPENDENTE();
+    echo $dipendente->stampaTabellaDIPxEdit($matricola,'matricola');
+}
 
+if(isset($_POST['cercaDIPxCognome']))
+{
+    require_once("CLASS_dip.php");
+    $cognome=sanitizeInput($_POST['cognome']);
+    
+    $dipendente=new DIPENDENTE();
+    echo $dipendente->stampaTabellaDIPxEdit($cognome,'cognome');
+}
 
-
+if(isset($_POST['editDipendente']))
+{
+    require_once("CLASS_dip.php");
+    $matricola=sanitizeInput($_POST['matricola']);
+    $cognome=sanitizeInput($_POST['cognome']);
+    $nome=sanitizeInput($_POST['nome']);
+    
+    $dipendente=new DIPENDENTE();
+    $dipendente->getDipByMat($matricola);
+    $dipendente->cognome=$cognome;
+    $dipendente->nome=$nome;
+    
+    if($matric)
+    if(!$dipendente->aggiornaDip()) echoResponse('no',$dipendente->DBconn->error);
+    else echoResponse('yes',"Aggiornato utente con matricola ".$dipendente->matricola);
+}
 ?>

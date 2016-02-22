@@ -97,6 +97,20 @@ class TIPO
         }
         echo "</select>";
     }
+    
+    public function stampaSelectedComboType($tipo)
+    {
+        $query="SELECT id,nome FROM tipo_richiesta";
+        $res=$this->DBconn->query($query);
+        echo "<select id='types'>";
+        while($option=$res->fetch_assoc())
+        {
+            echo "<option class='selettore_tipo' value='".$option['id']."' ";
+            if($option['id']==$tipo) echo "selected='selected'";
+            echo ">".$option['nome']."</option>";
+        }
+        echo "</select>";
+    }
 }
 
 

@@ -42,4 +42,9 @@ function moveWhatEverExt($fileName,$origin,$destination)
     else return false;
     
 }
+
+function getFileExt($fileName)
+{
+    return substr($fileName,-4);
+}
 ?>
