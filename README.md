@@ -1,7 +1,7 @@
 # dbIMAC_V2
 Gestionale per procedura IMAC - Installazione Movimentazione Aggiunta Censimento
 
-STATO AVANZAMENTO LAVORI: 70%
+STATO AVANZAMENTO LAVORI: 85%
 LINGUA PROGETTO: ITALIANA 
 
 Parte del mio lavoro all'Helpdesk di Regione Campania prevede il controllo delle procedure di censimento, riassegnazione e dismissione
