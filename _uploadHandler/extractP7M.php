@@ -16,7 +16,7 @@ function extractFromP7M($fileName,$tempDir,$outputDir)
     $cmd="openssl.exe smime -verify -inform DER -in ".$inputFile." -noverify -out ".$outputFile;
     
     //identifico il nome del batch
-    $path="bat_".$_SESSION['username'].".bat";
+    $path="bat_".$_SESSION['usernameDBIMACV2'].".bat";
     
     //scrivo nel file batch
     $batch=fopen($path,"w");
@@ -45,6 +45,7 @@ function moveWhatEverExt($fileName,$origin,$destination)
 
 function getFileExt($fileName)
 {
-    return substr($fileName,-4);
+    return ".".pathinfo($fileName,PATHINFO_EXTENSION);
+    //return substr($fileName,-4);
 }
 ?>

@@ -6,10 +6,8 @@ if($_SESSION['loggato']==1)
     require_once "core/CLASS_user.php";
     $utente=new UTENTE("","","","","");
     $utente->passa_da_SESSION();
-    if($utente->admin==1)
-    {
-        echo "
-            <!DOCTYPE html>
+    echo "
+    <!DOCTYPE html>
             <head>
               <title>DB IMAC V2 - AMMINISTRAZIONE</title>
               <meta charset='utf-8'>
@@ -22,7 +20,11 @@ if($_SESSION['loggato']==1)
                 <script src='js/bootstrap.min.js'></script>
                 <script src='js/defaultScript.js'></script>
                 <script src='js/jquery-ui.min.js'></script>
-            </head>
+            </head>";
+    if($utente->admin==1)
+    {
+        echo "
+            
             <nav class='navbar navbar-default' role='navigation'>
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class='navbar-header'>
@@ -69,11 +71,14 @@ if($_SESSION['loggato']==1)
                 </nav>
             <body>
             <div class='container-fluid' id='adminContent'></div>   
-            </body>
-            </html>
+            
             ";
     }
-    
+    else
+    {
+        echo "<body><div class='alert alert-danger'>NON HAI IL PERMESSO DI ENTRARE QUI!</div>";
+    }
+    echo "</body></html>";
     
 }
 else header("location:login.php");

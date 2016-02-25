@@ -92,6 +92,9 @@ ul{
 #adminConsole{
     margin-top:20px;
 }
+#changePSW{
+    margin-top:20px;
+}
 #logout{
     margin-top:20px;
 }
@@ -101,6 +104,9 @@ ul{
 .defwidth{
     width:6em;
 }
+.pswdefwidth{
+    width:15em;
+}
 #hintContent{
     width:20em;
     z-index: 9999;
@@ -109,4 +115,6 @@ ul{
     text-decoration: underline;
     color: #33cc33;
 }
-
+.DESCRIZIONE{
+    width:15em;
+}

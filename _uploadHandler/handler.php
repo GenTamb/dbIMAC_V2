@@ -32,8 +32,8 @@ if(isset($_GET['upload']))
 if(isset($_POST['send']))
 {
     $counter=0;   
-    $uploadDirTemp = ROOT."\\_uploadHandler\\temp_".$_SESSION['username']."\\";
-    $uploadDirDest = ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
+    $uploadDirTemp = ROOT."\\_uploadHandler\\temp_".$_SESSION['usernameDBIMACV2']."\\";
+    $uploadDirDest = ROOT."\\_uploadHandler\\job_".$_SESSION['usernameDBIMACV2']."\\";
     mkdir($uploadDirTemp);
     mkdir($uploadDirDest);
     foreach($_FILES['uppati']['error'] as $file=> $error)

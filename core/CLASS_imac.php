@@ -115,7 +115,7 @@ class IMAC
                     {
                         echo "<tr>";
                         //echo "<td><a class='NPROTOCOLLO' id='nProtocollo' href='#".$row['nProtocollo']."'>N".$row['nProtocollo']."</a></td>";
-                        echo "<td><span class='NPROTOCOLLO' id='nProtocollo'>N".$row['nProtocollo']."</span></td>";
+                        echo "<td><span class='NPROTOCOLLO' id='nProtocollo'>".$row['nProtocollo']."</span></td>";
                         //echo "<td><a class='TICKET' id='ticket' href='#".$row['ticket']."'>".$row['ticket']."</a></td>";
                         echo "<td><span class='TICKET' id='ticket'>".$row['ticket']."</span></td>";
                         echo "<td><a class='MATRICOLA' id='matricola' href='#".$row['matUtente']."'>".$row['matUtente']."</a></td>";
@@ -186,7 +186,7 @@ class IMAC
                 while($row=$res->fetch_assoc())
                 {
                         echo "<tr>";
-                        echo "<td><span class='NPROTOCOLLO' id='nProtocollo'>N".$row['nProtocollo']."</span></td>";
+                        echo "<td><span class='NPROTOCOLLO' id='nProtocollo'>".$row['nProtocollo']."</span></td>";
                         echo "<td><span class='TICKET' id='ticket'>".$row['ticket']."</span></td>";
                         echo "<td><a class='MATRICOLA' id='matricola' href='#".$row['matUtente']."'>".$row['matUtente']."</a></td>";
                         echo "<td><span class='COGNOME,NOME' id='cognome,nome'>".$row['cognome'].",".$row['nome']."</span></td>";
@@ -251,7 +251,7 @@ class IMAC
                 while($row=$res->fetch_assoc())
                 {
                         echo "<tr>";
-                        echo "<td><span class='NPROTOCOLLO' id='nProtocollo'>N".$row['nProtocollo']."</span></td>";
+                        echo "<td><span class='NPROTOCOLLO' id='nProtocollo'>".$row['nProtocollo']."</span></td>";
                         echo "<td><input type='text' class='TICKET numero' id='ticket' value='".$row['ticket']."'></td>";
                         echo "<td><input type='text' class='MATRICOLA' id='matricola' value='".$row['matUtente']."'></td>";
                         echo "<td><input type='text' class='COGNOME,NOME' id='cognome_nome' value='".$row['cognome'].",".$row['nome']."'></td>";
@@ -287,6 +287,20 @@ class IMAC
                 echo "<span class='alert alert-danger'>Nessun risultato per il filtro impostato!</span>";
             }
         }
+    }
+    
+    public function getAmountImacByToken($param)
+    {
+        if($param=='matricola') $query="SELECT COUNT(*) AS count FROM imac WHERE matUtente='".$this->matUtente."'";
+        if($param=='tipo') $query="SELECT COUNT(*) AS count FROM imac WHERE tipoRichiesta='".$this->tipoRichiesta."'";
+        
+        if(!$res=$this->DBconn->query($query)) $return=0;
+        else
+        {
+            $row=$res->fetch_assoc();
+            $return=$row['count'];
+        }
+        return $return;
     }
     
     private function stampaStatoCombo($stato)

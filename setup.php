@@ -59,9 +59,18 @@ $_SESSION['root']=dirname(__FILE__);
         </form>
     </div>
     <div class="container-fluid divHidden text-center" id="setupComplete">
-      <h2>Ci siamo quasi!</h2>
-      <p>Click per continuare!</p>
-      <button class="btn btn-info btn-sm" id="done">Finish!</button>
+      <table>
+        <thead>
+          <tr><th>Ci siamo quasi!</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><label for="startImac">Inserisci il progressivo IMAC da cui partire</label></td></tr>
+          <tr><td><input type="number" id="startImac" value='1' size="10"></td></tr>
+          <tr><td><p>Click per continuare!</p></td></tr>
+          <tr><td><button class="btn btn-info btn-sm" id="done">Finish!</button></td></tr>
+        </tbody>
+      </table>
+      
     </div>
 <div class="modal"></div>
 </body>

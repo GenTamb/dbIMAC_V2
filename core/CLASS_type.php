@@ -62,20 +62,36 @@ class TIPO
     
     public function insertType()
     {
-        $query="INSERT INTO tipo_richiesta (nome) VALUES ('".$this->nome."')";
-        if(!$res=$this->DBconn->query($query))
+        $this->toUpperAll();
+        if(!$this->getTypeByNome($this->nome))
         {
-            $fine=false;
-            echo $this->DBconn->error;
+            $query="INSERT INTO tipo_richiesta (nome) VALUES ('".$this->nome."')";
+            if(!$res=$this->DBconn->query($query))
+            {
+                $fine=false;
+                echo $this->DBconn->error;
+            }
+            else
+            {
+                $this->id=$this->DBconn->insert_id;
+                $fine=true;
+            }
+            return $fine;
         }
-        else $fine=true;
+        else return false;
         
-        return $fine;
     }
     
-    public function aggiornaDip()
+    public function cancellaType()
     {
-         $query="UPDATE tipo_richiesta SET nome='".$this->nome."' WHERE id='".$this->id."'";
+        $query="DELETE FROM tipo_richiesta WHERE id='".$this->id."'";
+        $this->DBconn->query($query);
+    }
+    
+    public function aggiornaType()
+    {
+        $this->toUpperAll();
+        $query="UPDATE tipo_richiesta SET nome='".$this->nome."' WHERE id='".$this->id."'";
         if(!$res=$this->DBconn->query($query))
         {
             $fine=false;
@@ -110,6 +126,49 @@ class TIPO
             echo ">".$option['nome']."</option>";
         }
         echo "</select>";
+    }
+    
+    public function stampaTypeListXedit()
+    {
+        $query="SELECT id,nome FROM tipo_richiesta";
+        $res=$this->DBconn->query($query);
+        if(!$res=$this->DBconn->query($query)) echo $this->DBconn->error;
+        else
+        {
+            if($res->num_rows>=1)
+            {
+                echo "<div id='typeList' class='table-responsive'>
+                          <table class='table'>
+                             <thead>
+                                 <tr>
+                                 <th>ID</th><th>DESCRIZIONE</th><th>NUOVA DESCRIZIONE</th><th>EDIT</th><th>DELETE</th>
+                                 </tr>
+                             </thead>
+                             <tbody>";
+                while($row=$res->fetch_assoc())
+                {
+                        echo "<tr>";
+                        echo "<td><span class='IDTYPE' id='idtype'>".$row['id']."</span></td>";
+                        echo "<td><span class='DESCRIZIONE' id='descrizioneStored'>".$row['nome']."</span></td>";
+                        echo "<td><input type='text' class='DESCRIZIONE' id='descrizioneNew' value=''></td>";
+                        echo "<td><button id='EDITtypelist' class='btn btn-sm btn-info TYPE-CD'>V</button></td>";
+                        echo "<td><button id='DELtypelist' class='btn btn-sm btn-danger TYPE-CD'>X</button></td>";
+                        echo "</tr>";
+                }
+                     echo "</tbody>
+                          </table>
+                          </div>";
+            }
+            else
+            {
+                echo "<span class='alert alert-danger'>Nessun risultato per il filtro impostato!</span>";
+            }
+        }
+          
+    }
+    private function toUpperAll()
+    {
+        $this->nome=strtoupper($this->nome);
     }
 }
 

@@ -6,6 +6,34 @@ function stampaHintDiv()
     echo "<hr>";
     echo "<div id='hintContent' class='nascosto border1px'></div>";
 }
+
+/************************************************************************
+ *                              user script                             *
+ ************************************************************************/
+
+if(isset($_POST['changePSW']))
+{
+   echo "
+    <div class='container' id='setupDBform'>
+    <h2>Cambio password</h2>
+    <form role='form'>
+        <div class='form-group'>
+            <label for='oldPSW'>Vecchia password</label>
+            <input type='password' class='form-control pswdefwidth' id='oldPSW'>
+        </div>
+        <div class='form-group'>
+            <label for='newPSW'>Nuova password</label>
+            <input type='password' class='form-control pswdefwidth' id='newPSW'>
+        </div>
+        <div class='form-group'>
+            <label for='confirmPSW'>Conferma password</label>
+            <input type='password' class='form-control pswdefwidth' id='confirmPSW'>
+        </div>
+        <input type='submit' id='changePSWbutton' class='btn btn-warning btn-sm' name='submit' value='Submit'>
+        </form>
+    </div>";
+   
+}
 /*************************************************************************
  *                               admin  script                           *
  *************************************************************************/
@@ -41,9 +69,9 @@ if(isset($_POST['fetchIMAC']))
     require_once "excelFunctions.php";
     require_once "CLASS_type.php";
     $option=new TIPO();
-    if(is_dir($fetchPath=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\"))
+    if(is_dir($fetchPath=ROOT."\\_uploadHandler\\job_".$_SESSION['usernameDBIMACV2']."\\"))
   {
-    $relativePath="_uploadHandler/job_".$_SESSION['username']."/";
+    $relativePath="_uploadHandler/job_".$_SESSION['usernameDBIMACV2']."/";
     $fileList=array_slice(scandir($fetchPath),2);
     echo "<div id='imacFetchList' class='table-responsive'>
                           <table class='table'>
@@ -227,6 +255,76 @@ if(isset($_POST['editDIP']))
                  </li>
     </ul>
    ";  
+}
+
+if(isset($_POST['newTYPE']))
+{
+    echo "
+        <div id='newType' class='table-responsive'>
+                          <table class='table'>
+                             <thead>
+                                 <tr>
+                                 <th>DESCRIZIONE</th><th>+</th><th>-</th>
+                                 </tr>
+                             </thead>
+                             <tbody>";
+    echo "<tr id='blankTypeRow' class='nascosto'>";
+    echo "<td><input type='text' id='description' class='' value=''></td>";
+    echo "<td><button id='ADDtype' class='btn btn-sm btn-success TYPE-CD'>ADD</button></td>";
+    echo "<td><button id='DELtype' class='btn btn-sm btn-warning TYPE-CD'>DEL</button></td>";
+    echo "</tr>";
+    echo "<tr id='typeRow'>";
+    echo "<td><input type='text' id='description' class='' value=''></td>";
+    echo "<td><button id='ADDtype' class='btn btn-sm btn-success TYPE-CD'>ADD</button></td>";
+    echo "<td><button id='DELtype' class='btn btn-sm btn-warning TYPE-CD'>DEL</button></td>";
+    echo "</tr>";
+    echo "</tbody>
+          </table>
+          <button id='newRow' class='btn btn-md btn-success'>Add Row</button>
+          </div>";
+    //stampaHintDiv();
+         
+}
+
+if(isset($_POST['newUSER']))
+{
+    echo "
+     <div id='newUser' class='table-responsive'>
+                          <table class='table'>
+                             <thead>
+                                 <tr>
+                                 <th>USERNAME</th><th>PASSWORD</th><th>COGNOME</th><th>NOME</th><th>ADMIN</th><th>+</th><th>-</th>
+                                 </tr>
+                             </thead>
+                             <tbody>";
+    echo "<tr id='blankUserRow' class='nascosto'>";
+    echo "<td><input type='text' id='userName' class='defwidth' value=''></td>";
+    echo "<td><input type='password' id='userPassword' class='defwidth' value=''></td>";
+    echo "<td><input type='text' id='userCognome' class='defwidth' value=''></td>";
+    echo "<td><input type='text' id='userNome' class='defwidth' value=''></td>";
+    echo "<td><select id='userAdmin'>
+              <option value='0'>NO</option>
+              <option value='1'>SI</option>
+              </select>";
+    echo "<td><button id='ADDuser' class='btn btn-sm btn-success USER-CD'>ADD</button></td>";
+    echo "<td><button id='DELuser' class='btn btn-sm btn-warning USER-CD'>DEL</button></td>";
+    echo "</tr>";
+    echo "<tr id='firstUserRow' class=''>";
+    echo "<td><input type='text' id='userName' class='defwidth' value=''></td>";
+    echo "<td><input type='password' id='userPassword' class='defwidth' value=''></td>";
+    echo "<td><input type='text' id='userCognome' class='defwidth' value=''></td>";
+    echo "<td><input type='text' id='userNome' class='defwidth' value=''></td>";
+    echo "<td><select id='userAdmin'>
+              <option value='0'>NO</option>
+              <option value='1'>SI</option>
+              </select>";
+    echo "<td><button id='ADDuser' class='btn btn-sm btn-success USER-CD'>ADD</button></td>";
+    echo "<td><button id='DELuser' class='btn btn-sm btn-warning USER-CD'>DEL</button></td>";
+    echo "</tr>";
+    echo "</tbody>
+          </table>
+          <button id='newRow' class='btn btn-md btn-success'>Add Row</button>
+          </div>";
 }
 
 

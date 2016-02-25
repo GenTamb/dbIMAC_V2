@@ -50,9 +50,17 @@ $(document).ready(function(){
 
 $(document).ready(function(){
    $("#done").click(function(){
-    $.post("core/funcs.php",
+    var progressivoImac=$("#startImac").val();
+    if (progressivoImac<=0)
+    {
+        alert('Inserisci un numero positivo!');
+    }
+    else
+    {
+         $.post("core/funcs.php",
            {
-            completeSetup:1
+            completeSetup:1,
+            progressivoImac:progressivoImac
            },
            function(data)
            {
@@ -64,6 +72,8 @@ $(document).ready(function(){
             else alert("C'è stato un errore, contatta il developer");
            },"json"
           );
+    }
+   
     });
 });
 

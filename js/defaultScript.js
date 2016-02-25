@@ -122,6 +122,59 @@ $(document).ready(function(){
     });
 });
 
+//cambio password form
+$(document).ready(function(){
+    $("#changePSW").click(function(){
+       $.post("core/gui.php",
+              {
+                changePSW:1
+              },
+              function(data)
+              {
+                $("#container").html(data);
+              });
+    });
+});
+
+//cambio password button
+$(document).ready(function(){
+    $("#container").on('click','#changePSWbutton',function(e){
+        e.preventDefault();
+        var oldpsw=$("#oldPSW").val();
+        var newpsw=$("#newPSW").val();
+        var conpsw=$("#confirmPSW").val();
+        var go=true;
+        if (oldpsw=='' || newpsw=='' || conpsw=='')
+        {
+            alert('Uno o più campi vuoti');
+        }
+        else if (newpsw!=conpsw)
+        {
+            alert('Campo nuova e conferma password non corrispondono');
+        }
+        else
+        {
+            $.post("core/funcs.php",
+                  {
+                   changePSW:1,
+                   oldpsw:oldpsw,
+                   newpsw:newpsw,
+                   logout:1
+                  },
+                  function(data)
+                  {
+                    if (data[0]=='yes')
+                    {
+                        alert('Cambio password riuscito, rieffettua il login');
+                        window.location.href="login.php";
+                    }
+                    else alert(data[1]);
+                  },"json"
+                  );
+        }
+    });
+});
+
 //logout
 $(document).ready(function(){
     $("#logout").click(function(){
@@ -662,7 +715,7 @@ $(document).ready(function(){
                    {
                     if (data[0]=='yes')
                     {
-                        FIELDprot.text('N'+data[1]);
+                        FIELDprot.text(data[1]);
                         $(currentTR).find(".IMAC-CD").hide("slow");
                     }
                     else alert(data[1]);
@@ -1047,6 +1100,7 @@ $(document).ready(function(){
         }
     });
 });
+
 //funzionamento new mat button
 $(document).ready(function(){
    $("#adminContent").on("click","#newMatButton",function(){
@@ -1059,6 +1113,7 @@ $(document).ready(function(){
      }
    });
 });
+
 //funzionamento bottone EDIT
 $(document).ready(function(){
     $("#adminContent").on('click','#EDITdiplist',function(){
@@ -1096,5 +1151,419 @@ $(document).ready(function(){
                    },"json"
                   );
         }
+    });
+});
+
+//funzionamento bottone DEL
+$(document).ready(function(){
+    $("#adminContent").on('click',"#DELdiplist",function(){
+       var currentTR=$(this).closest("tr");
+       var matricola=$(currentTR).find("#matUtenteRec").text();
+       var go=confirm("Sei sicuro di voler cancellare l'utente con matricola "+ matricola+"?");
+        if (go)
+        {
+            $.post("core/funcs.php",
+                   {
+                    deleteDIP:1,
+                    matricola:matricola
+                   },
+                   function(data)
+                   {
+                    if (data[0]=='yes')
+                    {
+                        $(currentTR).hide("slow");
+                    }
+                   alert(data[1]);
+                   },"json");
+        }    
+    });
+});
+
+/*********************************************
+ *                 TIPOLOGIE                 *
+ *********************************************/
+
+/**************************
+ *          NEW           *
+ **************************/
+//open menu new Dipendente
+$(document).ready(function(){
+    $("#newTYPE").click(function(){
+        $.post("core/gui.php",
+               {
+                newTYPE:1
+               },
+               function(data)
+               {
+                $("#adminContent").html(data);
+               }
+              );
+    });
+});
+
+//add row new Tipologia
+$(document).ready(function(){
+    $("#adminContent").on('click',"#newRow",function(){
+        $("#blankTypeRow").clone().appendTo('tbody').removeClass('nascosto');
+    });
+});
+//avviso max 30 caratteri
+$(document).ready(function(){
+    $("#adminContent").on('keyup',"#description,#descrizioneNew",function(){
+        var descrizione=$(this).val();
+        if (descrizione.length>=30)
+        {
+            alert('Numero massimo di caratteri pari a 30');
+        }
+    });
+});
+
+//funzionamento bottone add tipologia
+$(document).ready(function(){
+     $("#adminContent").on('click',"#ADDtype",function(){
+        var currentTR=$(this).closest("tr");
+        var descrizione=$(currentTR).find("#description").val();
+        if (descrizione=='')
+        {
+            alert('Campo vuoto!');
+        }
+        else if (descrizione.length>=30)
+        {
+            alert("Non puoi inserire una descrizione cosi\' lunga");
+        }
+        else
+        {
+            $.post("core/funcs.php",
+                   {
+                    addType:1,
+                    nome:descrizione
+                   },
+                   function (data)
+                   {
+                    if (data[0]=='yes')
+                    {
+                        $(currentTR).find(".TYPE-CD").hide("slow");
+                    }
+                    alert(data[1]);
+                   },"json"
+                  );
+        }
+    });
+});
+
+//funzionamento bottone del in menu add tipologia
+$(document).ready(function(){
+    $("#adminContent").on('click','#DELtype',function(){
+        var currentTR=$(this).closest("tr");
+        $(currentTR).hide("slow");
+    });
+});
+
+/**************************
+ *          EDIT          *
+ **************************/
+//menu DIPENDENTI - edit
+$(document).ready(function(){
+   $("#editTYPE").click(function(){
+    $.post("core/funcs.php",
+           {
+            editType:1
+           },
+           function (gui)
+           {
+            $("#adminContent").html(gui);
+           });
+   });
+});
+
+//funzionamento bottone EDIT - tipologie
+$(document).ready(function(){
+    $("#adminContent").on('click','#EDITtypelist',function(){
+        var currentTR=$(this).closest('tr');
+        var id=$(currentTR).find("#idtype").text();
+        var descrizione=$(currentTR).find("#descrizioneNew").val();
+        if (descrizione=='')
+        {
+            alert('Campo vuoto!');
+        }
+        else
+        {
+            $.post("core/funcs.php",
+                   {
+                    editTipologia:1,
+                    id:id,
+                    nome:descrizione
+                   },
+                   function(data)
+                   {
+                    if (data[0]=='yes')
+                    {
+                        $(currentTR).find(".TYPE-CD").hide("slow");
+                    }
+                    alert(data[1]);
+                   },"json"
+                  );
+        }
+    });
+});
+
+//funzionamento bottone DEL
+$(document).ready(function(){
+    $("#adminContent").on('click',"#DELtypelist",function(){
+       var currentTR=$(this).closest("tr");
+       var id=$(currentTR).find("#idtype").text();
+       var descrizione=$(currentTR).find("#descrizioneStored").text();
+       var go=confirm("Sei sicuro di voler cancellare la tipologia "+ descrizione+"?");
+        if (go)
+        {
+            $.post("core/funcs.php",
+                   {
+                    deleteType:1,
+                    id:id
+                   },
+                   function(data)
+                   {
+                    if (data[0]=='yes')
+                    {
+                        $(currentTR).hide("slow");
+                    }
+                   alert(data[1]);
+                   },"json");
+        }    
+    });
+});
+
+/*********************************************
+ *                  UTENTI                   *
+ *********************************************/
+
+/**************************
+ *          NEW           *
+ **************************/
+//open menu new UTENTE
+$(document).ready(function(){
+    $("#newUSER").click(function(){
+        $.post("core/gui.php",
+               {
+                newUSER:1
+               },
+               function(data)
+               {
+                $("#adminContent").html(data);
+               }
+              );
+    });
+});
+
+//add row new User
+$(document).ready(function(){
+    $("#adminContent").on('click',"#newRow",function(){
+        $("#blankUserRow").clone().appendTo('tbody').removeClass('nascosto');
+    });
+});
+//avviso max caratteri
+$(document).ready(function(){
+    
+    $("#adminContent").on('keyup',".defwidth",function(){
+        var field=$(this).attr('id');
+        var value=$(this).val();
+        switch (field)
+        {
+            case 'userName':
+                if (value.length>20)
+                {
+                    alert('Numero massimo di caratteri pari a 20');
+                    $(this).focus();
+                }
+                break;
+            case 'userPassword':
+                if (value.length>10)
+                {
+                    alert('Numero massimo di caratteri pari a 10');
+                    $(this).focus();
+                }
+                break;
+            case 'userCognome':
+                 if (value.length>30)
+                {
+                    alert('Numero massimo di caratteri pari a 30');
+                    $(this).focus();
+                }
+                break;
+            case 'userNome':
+                 if (value.length>20)
+                {
+                    alert('Numero massimo di caratteri pari a 20');
+                    $(this).focus();
+                }
+                break;
+        }
+    });
+
+});
+
+//funzionamento bottone add user
+$(document).ready(function(){
+     $("#adminContent").on('click',"#ADDuser",function(){
+        var currentTR=$(this).closest("tr");
+        var userName=$(currentTR).find("#userName").val();
+        var userPassword=$(currentTR).find("#userPassword").val();
+        var userCognome=$(currentTR).find("#userCognome").val();
+        var userNome=$(currentTR).find("#userNome").val();
+        var userAdmin=$(currentTR).find("#userAdmin").val();
+        
+        if (userName=='' || userPassword=='' || userCognome=='' || userNome=='')
+        {
+            alert('Campo vuoto!');
+        }
+        else if (userName.length>20 || userPassword.length>10 || userCognome.length>30 || userNome.length>20)
+        {
+            alert("Lunghezza campi non rispettata!");
+        }
+        else
+        {
+            $.post("core/funcs.php",
+                   {
+                    addUser:1,
+                    userName:userName,
+                    userPassword:userPassword,
+                    userCognome:userCognome,
+                    userNome:userNome,
+                    userAdmin:userAdmin
+                   },
+                   function (data)
+                   {
+                    if (data[0]=='yes')
+                    {
+                        $(currentTR).find(".USER-CD").hide("slow");
+                    }
+                    alert(data[1]);
+                   },"json"
+                  );
+        }
+    });
+});
+
+//funzionamento bottone del in menu add tipologia
+$(document).ready(function(){
+    $("#adminContent").on('click','#DELuser',function(){
+        var currentTR=$(this).closest("tr");
+        $(currentTR).hide("slow");
+    });
+});
+
+/**************************
+ *          EDIT          *
+ **************************/
+//open menu edit UTENTE
+$(document).ready(function(){
+   $("#editUSER").click(function(){
+    $.post("core/funcs.php",
+           {
+            editUser:1
+           },
+           function (gui)
+           {
+            $("#adminContent").html(gui);
+           });
+   });
+});
+
+//funzionamento new value button
+$(document).ready(function(){
+   $("#adminContent").on("click",".NEWVALUEUSER",function(){
+     var currentTR=$(this).closest("tr");
+     $(this).addClass('nascosto');
+     $(this).siblings("input").removeClass('nascosto');
+   });
+});
+
+//funzionamento bottone EDIT user
+$(document).ready(function(){
+    $("#adminContent").on('click',"#EDITusrlist",function(){
+        var currentTR=$(this).closest('tr');
+        
+        var userName=$(currentTR).find("#userName").text();
+        var userCognome=$(currentTR).find("#userCognome").text();
+        var userNome=$(currentTR).find("#userNome").text();
+        
+        if ($(currentTR).find("#newUserName").hasClass('nascosto'))
+        {
+            var NEWuserName='NO';
+        }
+        else var NEWuserName=$(currentTR).find("#newUserName").val();
+        
+        if ($(currentTR).find("#newUserPassword").hasClass('nascosto'))
+        {
+            var NEWuserPassword='NO';
+        }
+        else var NEWuserPassword=$(currentTR).find("#newUserPassword").val();
+        
+        if ($(currentTR).find("#newUserCognome").hasClass('nascosto'))
+        {
+            var NEWuserCognome='NO';
+        }
+        else var NEWuserCognome=$(currentTR).find("#newUserCognome").val();
+        
+        if ($(currentTR).find("#newUserNome").hasClass('nascosto'))
+        {
+            var NEWuserNome='NO';
+        }
+        else var NEWuserNome=$(currentTR).find("#newUserNome").val();
+        
+        var userAdmin=$(currentTR).find("#userAdmin").val();
+        
+        if (NEWuserName=='' || NEWuserPassword=='' || NEWuserCognome=='' || NEWuserNome=='')
+        {
+            alert('Attenzione, campi vuoti');
+        }
+        else
+        {
+            $.post("core/funcs.php",
+                   {
+                    editSingleUser:1,
+                    userName:userName,
+                    userCognome:userCognome,
+                    userNome:userNome,
+                    userAdmin:userAdmin,
+                    NEWuserName:NEWuserName,
+                    NEWuserPassword:NEWuserPassword,
+                    NEWuserCognome:NEWuserCognome,
+                    NEWuserNome:NEWuserNome
+                   },
+                   function(data)
+                   {
+                    if (data[0]=='yes')
+                    {
+                        $(currentTR).find(".USR-CD").hide("slow");
+                    }
+                    alert(data[1]);
+                   },"json");
+        }
+    });
+});
+
+//funzionamento bottone DEL
+$(document).ready(function(){
+    $("#adminContent").on('click',"#DELusrlist",function(){
+       var currentTR=$(this).closest("tr");
+       var username=$(currentTR).find("#userName").text();
+       var go=confirm("Sei sicuro di voler cancellare l'utente "+ username+"?");
+        if (go)
+        {
+            $.post("core/funcs.php",
+                   {
+                    deleteUser:1,
+                    username:username
+                   },
+                   function(data)
+                   {
+                    if (data[0]=='yes')
+                    {
+                        $(currentTR).hide("slow");
+                    }
+                   alert(data[1]);
+                   },"json");
+        }    
     });
 });

@@ -28,7 +28,8 @@ function moveAndRename($fileName,$newFileName,$origin,$destination)
 
 function getFileExt($fileName)
 {
-    return substr($fileName,-4);
+    return ".".pathinfo($fileName,PATHINFO_EXTENSION);
+    //return substr($fileName,-4);
 }
 /**************************************************************************************************************************************************
  *                                                          script generali                                                                       *
@@ -94,6 +95,7 @@ if(isset($_POST['completeSetup']))
     require_once("CLASS_db.php");
     require_once("CLASS_user.php");
     $db=new DBconn();
+    $prog=$_POST['progressivoImac'];
     //creazione tabella utenti (utilizzatori)
     $query="CREATE TABLE IF NOT EXISTS utenti
             (username VARCHAR(20),
@@ -136,14 +138,17 @@ if(isset($_POST['completeSetup']))
              ON UPDATE CASCADE,
              FOREIGN KEY(tipoRichiesta) REFERENCES tipo_richiesta(id)
              ON DELETE NO ACTION
-             ON UPDATE CASCADE)DEFAULT CHARSET=utf8 ENGINE InnoDB";
+             ON UPDATE CASCADE) AUTO_INCREMENT = ".$prog." DEFAULT CHARSET=utf8 ENGINE InnoDB";
     if(!$db->query($query)) echo $db->error;
     
     //creo primo admin
     $utente=new UTENTE($_SESSION['adminName'],$_SESSION['adminPass'],$_SESSION['adminRealName'],$_SESSION['adminRealSurname'],1);
-    if(!$utente->inserisciUtente()) echo $db->error;
-    else if(!rename(ROOT."/setup.php",ROOT."/_installFolder/setup.php")) echo "errore nello spostamento files";
-    else if(!rename(ROOT."/setup",ROOT."/_installFolder/setup")) echo "errore nello spostamento files";
+    if(!$utente->inserisciUtente()) echoResponse('no',$db->error);
+    else if(!rename(ROOT."/setup.php",ROOT."/_installFolder/setup.php")) echoResponse('no',"Errore nello spostamento file setup.php");
+    else if(!rename(ROOT."/setup",ROOT."/_installFolder/setup")) echoResponse('no',"Errore nello spostamento folder setup");
+    else if(!rename(ROOT."/_installFolder/admin.php",ROOT."/admin.php")) echoResponse('no',"Errore nello spostamento file admin.php");
+    else if(!rename(ROOT."/_installFolder/login.php",ROOT."/login.php")) echoResponse('no',"Errore nello spostamento file login.php");
+    else if(!rename(ROOT."/_installFolder/index.php",ROOT."/index.php")) echoResponse('no',"Errore nello spostamento file index.php");
     else echoResponse('yes',"Setup completato");
 }
 
@@ -195,6 +200,20 @@ if(isset($_POST['recuperaFile']))
     $imac=new IMAC();
     $imac->istanziaImacByProt($_POST['nProtocollo']);
     echo $imac->pathFile;
+}
+
+//cambio password form
+if(isset($_POST['changePSW']))
+{
+    require_once("CLASS_user.php");
+    $oldpsw=sanitizeInput($_POST['oldpsw']);
+    $newpsw=sanitizeInput($_POST['newpsw']);
+        
+    $user=new UTENTE("","","","","");
+    $user->passa_da_SESSION();
+    
+    if($user->userAggiornaPassword($oldpsw,$newpsw)) echoResponse('yes','Aggiornata password');
+    else echoResponse('no','Errore, forse password originale sbagliata');
 }
 
 //logout
@@ -280,8 +299,8 @@ if(isset($_POST['deleteTempFiles']))
 {
     require_once "db.php";
     
-    $tempDir=ROOT."\\_uploadHandler\\temp_".$_SESSION['username']."\\";
-    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
+    $tempDir=ROOT."\\_uploadHandler\\temp_".$_SESSION['usernameDBIMACV2']."\\";
+    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['usernameDBIMACV2']."\\";
     $fileList_jobDir=array_slice(scandir($jobDir),2);
     $fileList_tempDir=array_slice(scandir($tempDir),2);
     foreach($fileList_jobDir as $file_jobDir) unlink($jobDir.$file_jobDir);
@@ -296,7 +315,7 @@ if(isset($_POST['deleteTempFiles']))
 if(isset($_POST['deleteSingleTempFile']))
 {
     require_once "db.php";
-    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
+    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['usernameDBIMACV2']."\\";
     $fileName=$_POST['fileName'];
     if(unlink($jobDir.$fileName)) echoResponse('yes','Cancellato');
     else echoResponse('no','Errore');
@@ -306,7 +325,7 @@ if(isset($_POST['addRecord']))
 {
     require_once "db.php";
     require_once "CLASS_imac.php";
-    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
+    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['usernameDBIMACV2']."\\";
     $recDir=ROOT."\\recordFile\\";
     
     $ticket=sanitizeInput($_POST['ticket']);
@@ -408,7 +427,7 @@ if(isset($_POST['editRecord']))
 {
     require_once "db.php";
     require_once "CLASS_imac.php";
-    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['username']."\\";
+    $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['usernameDBIMACV2']."\\";
     $recDir=ROOT."\\recordFile\\";
     
     $imac=new IMAC();
@@ -421,7 +440,7 @@ if(isset($_POST['editRecord']))
     $note=sanitizeInput($_POST['note']);
     $dataApertura=$_POST['dataApertura'];
     
-    $nProtocollo=str_replace("N","",$nProtocollo);
+    //$nProtocollo=str_replace("N","",$nProtocollo);
     $error=false;
     //istanzio imac
     if(!$imac->istanziaImacByProt($nProtocollo))
@@ -517,7 +536,7 @@ if(isset($_POST['deleteIMAC']))
     require_once "CLASS_imac.php";
     $recDir=ROOT."\\recordFile\\";
     $nProtocollo=$_POST['nProtocollo'];
-    $nProtocollo=str_replace("N","",$nProtocollo);
+    //$nProtocollo=str_replace("N","",$nProtocollo);
     
     $imac=new IMAC();
     $imac->istanziaImacByProt($nProtocollo);
@@ -546,7 +565,7 @@ if(isset($_POST['deleteIMAC']))
 }
 
 /**********************************
- *      DIPENDENTI management     *
+ *   DIPENDENTI management ADD    *
  **********************************/
 
 if(isset($_POST['addDip']))
@@ -564,6 +583,10 @@ if(isset($_POST['addDip']))
     if(!$dipendente->insertDip()) echoResponse('no',$dipendente->DBconn->error);
     else echoResponse('yes','Aggiunto dipendente con matricola '.$dipendente->matricola);
 }
+
+/**********************************
+ *   DIPENDENTI management EDIT   *
+ **********************************/
 
 if(isset($_POST['cercaDIPxMatricola']))
 {
@@ -589,14 +612,240 @@ if(isset($_POST['editDipendente']))
     $matricola=sanitizeInput($_POST['matricola']);
     $cognome=sanitizeInput($_POST['cognome']);
     $nome=sanitizeInput($_POST['nome']);
+    $nuovaMat=sanitizeInput($_POST['nuovaMat']);
     
     $dipendente=new DIPENDENTE();
     $dipendente->getDipByMat($matricola);
     $dipendente->cognome=$cognome;
     $dipendente->nome=$nome;
     
-    if($matric)
-    if(!$dipendente->aggiornaDip()) echoResponse('no',$dipendente->DBconn->error);
-    else echoResponse('yes',"Aggiornato utente con matricola ".$dipendente->matricola);
+    if($nuovaMat!='NO')
+    {
+        $nuovaMat=strtoupper($nuovaMat);
+        if(!$dipendente->aggiornaDip($nuovaMat)) echoResponse('no',$dipendente->DBconn->error);
+        else echoResponse('yes',"Aggiornato dipendente con nuova matricola ".$nuovaMat);
+    }
+    else
+    {
+        if(!$dipendente->aggiornaDip()) echoResponse('no',$dipendente->DBconn->error);
+        else echoResponse('yes',"Aggiornato utente con matricola ".$dipendente->matricola);    
+    }
+    
 }
+
+if(isset($_POST['deleteDIP']))
+{
+    require_once("CLASS_dip.php");
+    require_once("CLASS_imac.php");
+    $dipendente=new DIPENDENTE();
+    $imac=new IMAC();
+    
+    $dipendente->matricola=$_POST['matricola'];
+    $imac->matUtente=$_POST['matricola'];
+    if($imac->getAmountImacByToken('matricola')==0)
+    {
+        $dipendente->cancellaDip();
+        echoResponse('yes',"Cancellato dipendente con matricola ".$dipendente->matricola);
+    }
+    else echoResponse('no',"Il dipendente non può essere cancellato perchè sono presenti IMAC associate a lui");
+}
+
+/**********************************
+ *    TIPOLOGIE management ADD    *
+ **********************************/
+
+if(isset($_POST['addType']))
+{
+    require_once("CLASS_type.php");
+    $nome=sanitizeInput($_POST['nome']);
+    
+    $tipo=new TIPO();
+    $tipo->nome=$nome;
+    if(!$tipo->insertType()) echoResponse('no',"Errore inserimento con DB o tipologia già esistente");
+    else echoResponse('yes',"Inserita tipologia: ".$tipo->nome);
+    
+}
+
+/**********************************
+ *    TIPOLOGIE management EDIT   *
+ **********************************/
+//mostra tutte le tipologie
+if(isset($_POST['editType']))
+{
+    require_once("CLASS_type.php");
+    $tipo=new TIPO();
+    $tipo->stampaTypeListXedit();
+}
+
+//script edit tipologia
+if(isset($_POST['editTipologia']))
+{
+    require_once("CLASS_type.php");
+    $tipo=new TIPO();
+    $newNome=sanitizeInput($_POST['nome']);
+    $id=$_POST['id'];
+    $tipo->id=$id;
+    $tipo->nome=$newNome;
+    if(!$tipo->aggiornaType()) echoResponse('no',"Errore aggiornamento record, contatta un admin");
+    else echoResponse('yes',"Record Aggiornato");
+}
+
+//script del tipologia
+if(isset($_POST['deleteType']))
+{
+    require_once("CLASS_type.php");
+    require_once("CLASS_imac.php");
+    $tipologia=new TIPO();
+    $imac=new IMAC();
+    
+    $tipologia->getTypeById($_POST['id']);
+    $imac->tipoRichiesta=$_POST['id'];
+    if($imac->getAmountImacByToken('tipo')==0)
+    {
+        $tipologia->cancellaType();
+        echoResponse('yes',"Cancellata tipologia ".$tipologia->nome);
+    }
+    else echoResponse('no',"La tipologia non può essere cancellato perchè sono presenti IMAC associate a lei");
+}
+
+/**********************************
+ *        USER  management ADD    *
+ **********************************/
+
+if(isset($_POST['addUser']))
+{
+    require_once("CLASS_user.php");
+    $userName=sanitizeInput($_POST['userName']);
+    $userPassword=sanitizeInput($_POST['userPassword']);
+    $userCognome=sanitizeInput($_POST['userCognome']);
+    $userNome=sanitizeInput($_POST['userNome']);
+    $userAdmin=sanitizeInput($_POST['userAdmin']);
+    
+    $user=new UTENTE($userName,$userPassword,$userNome,$userCognome,$userAdmin);
+    
+    if(!$user->inserisciUtente()) echoResponse('no',"Errore inserimento! Contatta un Admin");
+    else echoResponse('yes',"Inserito utente: ".$user->username);
+    
+}
+
+/**********************************
+ *       USER  management EDIT    *
+ **********************************/
+//mostra tutti gli utenti per edit
+if(isset($_POST['editUser']))
+{
+    require_once("CLASS_user.php");
+    $user=new UTENTE("","","","","");
+    $user->stampaUserListXedit();
+}
+
+//script edit user
+if(isset($_POST['editSingleUser']))
+{
+    require_once("CLASS_user.php");
+    
+    $userName=sanitizeInput($_POST['userName']);
+    $userCognome=sanitizeInput($_POST['userCognome']);
+    $userNome=sanitizeInput($_POST['userNome']);
+    $userAdmin=sanitizeInput($_POST['userAdmin']);
+    
+    $NEWuserName=sanitizeInput($_POST['NEWuserName']);
+    $NEWuserPassword=sanitizeInput($_POST['NEWuserPassword']);
+    $NEWuserCognome=sanitizeInput($_POST['NEWuserCognome']);
+    $NEWuserNome=sanitizeInput($_POST['NEWuserNome']);
+    
+    $user=new UTENTE($userName,"","","","");
+    $error=false;
+    $msg="Info aggiornate:";
+    if($NEWuserPassword!='NO')
+    {
+        $NEWuserPassword=$user->salt($NEWuserPassword);
+        if(!$user->adminAggiornaUtente($NEWuserPassword,"password"))
+        {
+            $error=true;
+            $msg="Errore aggiornamento password";
+        }
+        else $msg=$msg."-Password";
+    }
+    if($NEWuserCognome!='NO')
+    {
+        if(!$user->adminAggiornaUtente($NEWuserCognome,"cognome"))
+        {
+            $error=true;
+            $msg="Errore aggiornamento cognome";
+        }
+        else $msg=$msg."-Cognome";
+    }
+    if($NEWuserNome!='NO')
+    {
+        if(!$user->adminAggiornaUtente($NEWuserNome,"nome"))
+        {
+            $error=true;
+            $msg="Errore aggiornamento nome";
+        }
+        else $msg=$msg."-Nome";
+    }
+    if($user->getUsersCount('admin')==1 && $userAdmin==0)
+    {
+        $error=true;
+        $msg="Sei l'ultimo admin, non puoi declassarti da solo!";
+    }
+    else
+    {
+        if(!$user->adminAggiornaUtente($userAdmin,"admin"))
+        {
+            $error=true;
+            $msg="Errore aggiornamento permission";
+        }
+        else $msg=$msg."-Permission";
+    }
+    if($NEWuserName!='NO')
+    {
+        if(!$user->adminAggiornaUtente($NEWuserName,"username"))
+        {
+            $error=true;
+            $msg="Errore aggiornamento username";
+        }
+        else $msg=$msg."-Username";
+    }
+    if($error) echoResponse('no',$msg);
+    else echoResponse('yes',$msg);
+}
+
+//script del user
+if(isset($_POST['deleteUser']))
+{
+    session_start();
+    require_once("CLASS_user.php");
+    $username=$_POST['username'];
+    $user=new UTENTE($username,"","","","");
+    
+    if($_SESSION['usernameDBIMACV2']==$username)
+    {
+        $res="no";
+        $msg="Non puoi cancellare te stesso!!";
+    }
+    else if($user->getUsersCount()==1)
+    {
+        $res="no";
+        $msg="Sei l'unico utente rimasto!!";
+    }
+    else
+    {
+        if(!$user->cancellaUtente())
+        {
+            $res='no';
+            $msg="Errore, contatta un admin!";
+        }
+        else
+        {
+            $res='yes';
+            $msg="Utente cancellato";
+        }
+    }
+    echoResponse($res,$msg);
+    
+}
+
+
 ?>

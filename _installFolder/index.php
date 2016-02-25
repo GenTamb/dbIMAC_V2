@@ -72,9 +72,10 @@ if($_SESSION['loggato']==1)
                     </li>    
                   </ul>
                  </li>";
-                 if($utente->admin==1) echo "<li><button id='adminConsole' class='btn btn-sm btn-danger'>Amministrazione</button>";
+                 if($utente->admin==1) echo "<li><button id='adminConsole' class='btn btn-sm btn-danger'>Amministrazione</button></li>";
                  echo "
-                 <li><button id='logout' class='btn btn-sm- btn-warning'>Log Out</button></li>
+                 <li><button id='changePSW' class='btn btn-sm btn-success'>Cambia Password</button></li>
+                 <li><button id='logout' class='btn btn-sm btn-warning'>Log Out</button></li>
              </ul>
           </div>
           <div class='col-sm-10 col-md-10 col-lg-10' id='sideRightBody'>

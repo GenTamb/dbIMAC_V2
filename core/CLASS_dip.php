@@ -112,6 +112,7 @@ class DIPENDENTE
     
     public function insertDip()
     {
+        $this->toUpperAll();
         $query="INSERT INTO dipendenti (matricola,nome,cognome) VALUES ('".$this->matricola."','".$this->nome."','".$this->cognome."')";
         if(!$res=$this->DBconn->query($query))
         {
@@ -123,9 +124,16 @@ class DIPENDENTE
         return $fine;
     }
     
-    public function aggiornaDip()
+    public function aggiornaDip($nuovaMat="")
     {
-         $query="UPDATE dipendenti SET nome='".$this->nome."',cognome='".$this->cognome."' WHERE matricola='".$this->matricola."'";
+        $this->toUpperAll();
+        if($nuovaMat!="")
+        {
+            $nuovaMat=strtoupper($nuovaMat);
+            $query="UPDATE dipendenti SET matricola='".$nuovaMat."',nome='".$this->nome."',cognome='".$this->cognome."' WHERE matricola='".$this->matricola."'";
+            
+        }
+        else $query="UPDATE dipendenti SET nome='".$this->nome."',cognome='".$this->cognome."' WHERE matricola='".$this->matricola."'";
         if(!$res=$this->DBconn->query($query))
         {
             $fine=false;
@@ -134,6 +142,12 @@ class DIPENDENTE
         else $fine=true;
         
         return $fine;
+    }
+    
+    public function cancellaDip()
+    {
+        $query="DELETE FROM dipendenti WHERE matricola='".$this->matricola."'";
+        $this->DBconn->query($query);
     }
     
     public function getHintList($mat)
@@ -153,6 +167,13 @@ class DIPENDENTE
             }
             else echo "Nessun risultato";
         }
+    }
+    
+    private function toUpperAll()
+    {
+        $this->matricola=strtoupper($this->matricola);
+        $this->nome=strtoupper($this->nome);
+        $this->cognome=strtoupper($this->cognome);
     }
     
     
