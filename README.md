@@ -1,7 +1,9 @@
 # dbIMAC_V2
 Gestionale per procedura IMAC - Installazione Movimentazione Aggiunta Censimento
 
-STATO AVANZAMENTO LAVORI: 85%
+STATO AVANZAMENTO LAVORI: 100%
+Release Candidate 1
+In corso: debug e testing
 LINGUA PROGETTO: ITALIANA 
 
 Parte del mio lavoro all'Helpdesk di Regione Campania prevede il controllo delle procedure di censimento, riassegnazione e dismissione
@@ -31,3 +33,5 @@ Le parti "private" e legate alle particolari procedure interne, per ovvi motivi,
 Il codice è completamente libero. 
 Eventuali diritti della classe excel_reader sono dei rispettivi detentori.
 
+TO DO:
+-ottimizzazione generale del codice
