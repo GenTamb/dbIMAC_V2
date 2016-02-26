@@ -67,7 +67,7 @@ $(document).ready(function(){
             alert(data[1]);
             if (data[0]=='yes')
             {
-             window.location.href="index.php";   
+             window.location.href="login.php";   
             }
             else alert("C'è stato un errore, contatta il developer");
            },"json"

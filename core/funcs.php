@@ -317,8 +317,12 @@ if(isset($_POST['deleteSingleTempFile']))
     require_once "db.php";
     $jobDir=ROOT."\\_uploadHandler\\job_".$_SESSION['usernameDBIMACV2']."\\";
     $fileName=$_POST['fileName'];
-    if(unlink($jobDir.$fileName)) echoResponse('yes','Cancellato');
-    else echoResponse('no','Errore');
+    if($fileName!='Upload')
+    {
+        if(unlink($jobDir.$fileName)) echoResponse('yes','Cancellato');
+        else echoResponse('no','Errore durante cancellazione, contatta il developer');
+    }
+    else echoResponse('ni','Colonna cancellata');
 }
 
 if(isset($_POST['addRecord']))

@@ -118,7 +118,7 @@ class IMAC
                         echo "<td><span class='NPROTOCOLLO' id='nProtocollo'>".$row['nProtocollo']."</span></td>";
                         //echo "<td><a class='TICKET' id='ticket' href='#".$row['ticket']."'>".$row['ticket']."</a></td>";
                         echo "<td><span class='TICKET' id='ticket'>".$row['ticket']."</span></td>";
-                        echo "<td><a class='MATRICOLA' id='matricola' href='#".$row['matUtente']."'>".$row['matUtente']."</a></td>";
+                        echo "<td><span class='MATRICOLA' id='matricola'>".$row['matUtente']."</span></td>";
                         //echo "<td><a class='COGNOME,NOME' id='cognome,nome' href='#".$row['cognome'].",".$row['nome']."'>".$row['cognome'].",".$row['nome']."</a></td>";
                         echo "<td><span class='COGNOME,NOME' id='cognome,nome'>".$row['cognome'].",".$row['nome']."</span></td>";
                         //echo "<td><a class='INDICETIPO' id='indiceTipo' href='#".$row['tipoRichiesta']."'>".$row['tipoRichiesta']."</a></td>";

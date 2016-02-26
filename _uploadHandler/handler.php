@@ -45,7 +45,7 @@ if(isset($_POST['send']))
             {   
              echo "<div class='alert alert-success'>Uppato il file: <span id='uploadedFileName'>".$_FILES['uppati']['name'][$file]."</span></div>";
              
-             if($_FILES['uppati']['type'][$file]=='application/pkcs7-mime') //se è p7m
+             if(getFileExt($_FILES['uppati']['name'][$file])=='.p7m' || getFileExt($_FILES['uppati']['name'][$file])=='.P7M') //se è p7m
              {
                if(!extractFromP7M($_FILES['uppati']['name'][$file],$uploadDirTemp,$uploadDirDest)) //estrai e cancella p7m
                       echo "<div class='alert alert-danger'>errore estrazione file: ".$_FILES['uppati']['name'][$file]."</div>"; //altrimenti messaggio di errore
@@ -59,7 +59,7 @@ if(isset($_POST['send']))
                 if(!moveWhatEverExt($_FILES['uppati']['name'][$file],$uploadDirTemp,$uploadDirDest))  //sposto in job
                      echo "<div class='alert alert-danger'>errore spostamento file ".$_FILES['uppati']['name'][$file]."</div>";  //altrimenti messaggio di errore
                 else $counter++;
-                if(getFileExt($_FILES['uppati']['name'][$file])!='.xls') echo "<div class='alert alert-warning'>il file ".$_FILES['uppati']['name'][$file]." ha un'estensione generica</div>";
+                if(getFileExt($_FILES['uppati']['name'][$file])!='.xls' || getFileExt($_FILES['uppati']['name'][$file])!='.XLS') echo "<div class='alert alert-warning'>il file ".$_FILES['uppati']['name'][$file]." ha un'estensione generica</div>";
              }
              /*else //altrimenti, se è altro file, avviso
              {

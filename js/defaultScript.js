@@ -740,7 +740,7 @@ $(document).ready(function(){
                    },
                    function(data)
                    {
-                    if (data[0]=='yes')
+                    if (data[0]=='yes' || data[0]=='ni')
                     {
                         $(currentTR).hide("slow");
                     }
@@ -808,7 +808,7 @@ $(document).ready(function(){
                 }
                 else alert('Campo Vuoto');
                 break;
-            case "cercaXmatricolaButton":
+            case "cercaIMACXmatricolaButton":
                 if (checkEmptyFilter($("#cercaXmatricola")))
                 {
                 $.post("core/funcs.php",
@@ -1067,7 +1067,7 @@ $(document).ready(function(){
         var idButton=$(this).attr("id");
         switch (idButton)
         {
-            case "cercaXmatricolaButton":
+            case "cercaDIPXmatricolaButton":
                 if (checkEmptyFilter($("#cercaXmatricola")))
                 {
                 $.post("core/funcs.php",

@@ -135,7 +135,7 @@ if(isset($_POST['manualInsert']))
     echo "<td><input type='text' id='FETCHnote' value=''></td>";
     echo "<td><input type='text' id='FETCHdata_Manual' class='defwidth' value=''></td>";
     echo "<td><span id='FETCHprotImac' class='defwidth DataManual'></span></td>";
-    echo "<td><button id='FETCHadd' class='btn btn-sm btn-success IMAC-CD'>ADD</button></td>";
+    echo "<td><button id='MANUALadd' class='btn btn-sm btn-success IMAC-CD'>ADD</button></td>";
     echo "<td><button id='MANUALdel' class='btn btn-sm btn-warning IMAC-CD'>DEL</button></td>";
     echo "</tr>";
     
@@ -188,7 +188,7 @@ if(isset($_POST['editIMAC']))
                         <div class='form-group'>
                         <label for='cercaXmatricola'>Matricola</label><br>
                         <input id='cercaXmatricola' type='text' class='filtro' value='' data-toggle='tooltip' data-placement='bottom' title='Inserisci il numero di matricola'>
-                        <button id='cercaXmatricolaButton' class='btn btn-xs btn-info buttonFilter'>GO</button>
+                        <button id='cercaIMACXmatricolaButton' class='btn btn-xs btn-info buttonFilter'>GO</button>
                         </div>
                     </li>
                   </ul>
@@ -241,7 +241,7 @@ if(isset($_POST['editDIP']))
                         <div class='form-group'>
                         <label for='cercaXmatricola'>Matricola</label><br>
                         <input id='cercaXmatricola' class='filtro' type='text' value='' data-toggle='tooltip' data-placement='bottom' title='Inserisci la matricola'>
-                        <button id='cercaXmatricolaButton' class='btn btn-xs btn-info buttonFilter'>GO</button>
+                        <button id='cercaDIPXmatricolaButton' class='btn btn-xs btn-info buttonFilter'>GO</button>
                         </div>
                     </li>   
                     <li>
