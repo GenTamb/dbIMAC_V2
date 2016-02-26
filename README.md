@@ -1,5 +1,5 @@
 # dbIMAC_V2
-Gestionale per procedura IMAC - Installazione Movimentazione Aggiunta Censimento
+Gestionale per procedura IMAC - Installazione Movimentazione Aggiunta Configurazione
 
 STATO AVANZAMENTO LAVORI: 100%
 Release Candidate 1
