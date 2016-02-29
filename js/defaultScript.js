@@ -563,7 +563,7 @@ $(document).ready(function(){
         var FIELDmatricola=$(currentTR).find("#FETCHmatUtente").val();
         var FIELDcognomeNome=$(currentTR).find("#FETCHcognomeNome").val();
         var FIELDticket=$(currentTR).find("#FETCHticket").val();
-        var FIELDtipo=$(currentTR).find(".selettore_tipo").val();
+        var FIELDtipo=$(currentTR).find("#types").val();
         var FIELDnote=$(currentTR).find("#FETCHnote").val();
         var FIELDdata=$(currentTR).find("#FETCHdata").val();
         var FIELDprot=$(currentTR).find("#FETCHprotImac");
@@ -687,7 +687,7 @@ $(document).ready(function(){
         var FIELDmatricola=$(currentTR).find("#FETCHmatUtente").val();
         var FIELDcognomeNome=$(currentTR).find("#FETCHcognomeNome").val();
         var FIELDticket=$(currentTR).find("#FETCHticket").val();
-        var FIELDtipo=$(currentTR).find(".selettore_tipo").val();
+        var FIELDtipo=$(currentTR).find("#types").val();
         var FIELDnote=$(currentTR).find("#FETCHnote").val();
         var FIELDdata=$(currentTR).find("#FETCHdata").val();
         var FIELDprot=$(currentTR).find("#FETCHprotImac");
@@ -877,7 +877,7 @@ $(document).ready(function(){
     var FIELDmatricola=$(currentTR).find("#matricola").val();
     var FIELDcognomeNome=$(currentTR).find("#cognome_nome").val();
     var FIELDstato=$(currentTR).find("#STATO").val();
-    var FIELDtipo=$(currentTR).find(".selettore_tipo").val();
+    var FIELDtipo=$(currentTR).find("#types").val();
     var FIELDnote=$(currentTR).find("#note").val();
     var FIELDnewFile=$(currentTR).find(".newFileUppato").text();
     var FIELDdata=$(currentTR).find("#FETCHdata").val();
