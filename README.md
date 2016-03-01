@@ -2,7 +2,7 @@
 Gestionale per procedura IMAC - Installazione Movimentazione Aggiunta Configurazione
 
 STATO AVANZAMENTO LAVORI: 100%
-Release Candidate 3
+Release Candidate 4
 In corso: debug e testing
 LINGUA PROGETTO: ITALIANA 
 
