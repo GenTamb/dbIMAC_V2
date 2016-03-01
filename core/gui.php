@@ -86,7 +86,7 @@ if(isset($_POST['fetchIMAC']))
         $completePath=$fetchPath.$record;
         $matUtente=getMat($completePath);
         echo "<tr id='".$matUtente."'>";
-        echo "<td class='defwidth'><a href='".$relativePath.$record."'><span id='FETCHfileName'>".$record."</span></a></td>";
+        echo "<td class='defwidth'><a href='".$relativePath.htmlspecialchars($record,ENT_QUOTES)."'><span id='FETCHfileName'>".$record."</span></a></td>";
         echo "<td><input type='text' id='FETCHmatUtente' class='defwidth' value='".$matUtente."'></td>";
         echo "<td><input type='text' id='FETCHcognomeNome' value=''></td>";
         echo "<td><input type='text' id='FETCHticket' value='' class='defwidth numero'></td>";

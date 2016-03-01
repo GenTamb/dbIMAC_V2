@@ -591,7 +591,7 @@ $(document).ready(function(){
                    {
                     if (data[0]=='yes')
                     {
-                        FIELDprot.text('N'+data[1]);
+                        FIELDprot.text(data[1]);
                         $(currentTR).find(".IMAC-CD").hide("slow");
                     }
                     else alert(data[1]);
