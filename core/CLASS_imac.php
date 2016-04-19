@@ -103,11 +103,11 @@ class IMAC
         {
             if($res->num_rows>=1)
             {
-                echo "<div id='imacList' class='table-responsive table-fixed'>
+                echo "<div id='imacList' class='table-responsive'>
                       <table class='table'>
                          <thead>
                              <tr>
-                             <th>PROTOCOLLO</th><th>TICKET</th><th>MATRICOLA</th><th>COGNOME,NOME</th><th>TIPO</th><th>NOTE</th><th>FILE</th><th>DATA</th>
+                             <th>PROTOCOLLO</th><th>TICKET</th><th>MATRICOLA</th><th>COGNOME,NOME</th><th>STATO</th><th>TIPO</th><th>NOTE</th><th>FILE</th><th>DATA</th>
                              </tr>
                          </thead>
                          <tbody>";
@@ -123,7 +123,7 @@ class IMAC
                         echo "<td><span class='COGNOME,NOME' id='cognome,nome'>".$row['cognome'].",".$row['nome']."</span></td>";
                         //echo "<td><a class='INDICETIPO' id='indiceTipo' href='#".$row['tipoRichiesta']."'>".$row['tipoRichiesta']."</a></td>";
                         //echo "<td><a class='TIPO' id='tipo' href='#".$row['descrizione']."'>".$row['descrizione']."</a></td>";
-                        //echo "<td><span class='STATO' id='stato'>".$row['stato']."</span></td>";
+                        echo "<td><span class='STATO' id='stato'>".$row['stato']."</span></td>";
                         echo "<td><span class='TIPO' id='tipo'>".$row['descrizione']."</span></td>";
                         if($row['note']!='')
                         {
@@ -182,7 +182,7 @@ class IMAC
                           <table class='table'>
                              <thead>
                                  <tr>
-                                 <th>PROTOCOLLO</th><th>TICKET</th><th>MATRICOLA</th><th>COGNOME,NOME</th><th>TIPO</th><th>NOTE</th><th>FILE</th><th>DATA</th>
+                                 <th>PROTOCOLLO</th><th>TICKET</th><th>MATRICOLA</th><th>COGNOME,NOME</th><th>STATO</th><th>TIPO</th><th>NOTE</th><th>FILE</th><th>DATA</th>
                                  </tr>
                              </thead>
                              <tbody>";
@@ -195,7 +195,7 @@ class IMAC
                         echo "<td><span class='COGNOME,NOME' id='cognome,nome'>".$row['cognome'].",".$row['nome']."</span></td>";
                         //echo "<td><a class='INDICETIPO' id='indiceTipo' href='#".$row['tipoRichiesta']."'>".$row['tipoRichiesta']."</a></td>";
                         //echo "<td><a class='TIPO' id='tipo' href='#".$row['descrizione']."'>".$row['descrizione']."</a></td>";
-                        //echo "<td><span class='STATO' id='stato'>".$row['stato']."</span></td>";
+                        echo "<td><span class='STATO' id='stato'>".$row['stato']."</span></td>";
                         echo "<td><span class='TIPO' id='tipo'>".$row['descrizione']."</span></td>";
                         if($row['note']!='')
                             {
@@ -247,7 +247,7 @@ class IMAC
                           <table class='table'>
                              <thead>
                                  <tr>
-                                 <th>PROTOCOLLO</th><th>TICKET</th><th>MATRICOLA</th><th>COGNOME,NOME</th><th>TIPO</th><th>NOTE</th><th>FILE</th><th>New File</th><th>DATA</th><th>EDIT</th><th>DEL</th>
+                                 <th>PROTOCOLLO</th><th>TICKET</th><th>MATRICOLA</th><th>COGNOME,NOME</th><th>STATO</th><th>TIPO</th><th>NOTE</th><th>FILE</th><th>New File</th><th>DATA</th><th>EDIT</th><th>DEL</th>
                                  </tr>
                              </thead>
                              <tbody>";
@@ -258,9 +258,9 @@ class IMAC
                         echo "<td><input type='text' class='TICKET numero' id='ticket' value='".$row['ticket']."'></td>";
                         echo "<td><input type='text' class='MATRICOLA' id='matricola' value='".$row['matUtente']."'></td>";
                         echo "<td><input type='text' class='COGNOME,NOME' id='cognome_nome' value='".$row['cognome'].",".$row['nome']."'></td>";
-                        //echo "<td>";
-                        //$this->stampaStatoCombo($row['stato']);
-                        //echo "</td>";
+                        echo "<td>";
+                        $this->stampaStatoCombo($row['stato']);
+                        echo "</td>";
                         //echo "<td><span class='STATO' id='stato'>".$row['stato']."</span></td>";
                         echo "<td>";
                         $option->stampaSelectedComboType($row['tipoRichiesta']);
