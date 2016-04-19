@@ -246,6 +246,13 @@ if(isset($_POST['cercaXmatricola']))
     echo $imac->stampaImacDaParametro($_POST['matricola'],"matricola");
 }
 
+if(isset($_POST['cercaXnote']))
+{
+    require_once("CLASS_imac.php");
+    $imac=new IMAC();
+    echo $imac->stampaImacDaParametro($_POST['testo'],"note");
+}
+
 if(isset($_POST['cercaXdata']))
 {
     require_once("CLASS_imac.php");

@@ -261,6 +261,21 @@ $(document).ready(function(){
                 }
                 else alert('Campo Vuoto');
                 break;
+            case "cercaXnote":
+                if (checkEmptyFilter($("#cercaXnote")))
+                {
+                $.post("core/funcs.php",
+                       {
+                        cercaXnote:1,
+                        testo:$("#cercaXnote").val()
+                       },
+                       function(data)
+                       {
+                        $("#container").html(data);
+                       });
+                }
+                else alert('Campo Vuoto');
+                break;
             case "cercaXdataButton":
                 if (checkEmptyFilter($("#cercaXdata")))
                 {
@@ -563,7 +578,7 @@ $(document).ready(function(){
         var FIELDmatricola=$(currentTR).find("#FETCHmatUtente").val();
         var FIELDcognomeNome=$(currentTR).find("#FETCHcognomeNome").val();
         var FIELDticket=$(currentTR).find("#FETCHticket").val();
-        var FIELDtipo=$(currentTR).find("#types").val();
+        var FIELDtipo=$(currentTR).find(".selettore_tipo").val();
         var FIELDnote=$(currentTR).find("#FETCHnote").val();
         var FIELDdata=$(currentTR).find("#FETCHdata").val();
         var FIELDprot=$(currentTR).find("#FETCHprotImac");
@@ -591,7 +606,7 @@ $(document).ready(function(){
                    {
                     if (data[0]=='yes')
                     {
-                        FIELDprot.text(data[1]);
+                        FIELDprot.text('N'+data[1]);
                         $(currentTR).find(".IMAC-CD").hide("slow");
                     }
                     else alert(data[1]);
@@ -687,7 +702,7 @@ $(document).ready(function(){
         var FIELDmatricola=$(currentTR).find("#FETCHmatUtente").val();
         var FIELDcognomeNome=$(currentTR).find("#FETCHcognomeNome").val();
         var FIELDticket=$(currentTR).find("#FETCHticket").val();
-        var FIELDtipo=$(currentTR).find("#types").val();
+        var FIELDtipo=$(currentTR).find(".selettore_tipo").val();
         var FIELDnote=$(currentTR).find("#FETCHnote").val();
         var FIELDdata=$(currentTR).find("#FETCHdata").val();
         var FIELDprot=$(currentTR).find("#FETCHprotImac");
@@ -877,7 +892,7 @@ $(document).ready(function(){
     var FIELDmatricola=$(currentTR).find("#matricola").val();
     var FIELDcognomeNome=$(currentTR).find("#cognome_nome").val();
     var FIELDstato=$(currentTR).find("#STATO").val();
-    var FIELDtipo=$(currentTR).find("#types").val();
+    var FIELDtipo=$(currentTR).find(".selettore_tipo").val();
     var FIELDnote=$(currentTR).find("#note").val();
     var FIELDnewFile=$(currentTR).find(".newFileUppato").text();
     var FIELDdata=$(currentTR).find("#FETCHdata").val();

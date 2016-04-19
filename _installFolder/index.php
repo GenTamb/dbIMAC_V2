@@ -25,6 +25,7 @@ if($_SESSION['loggato']==1)
     <body>
       <div class='container-fluid' id='header'>
          <h1>DBIMACV2</h1>
+		 <p>by GT - Release Candidate 5</p>
       </div>
       <div class='container-fluid' id='bodyPage'>
         <div class='row'>
@@ -55,6 +56,13 @@ if($_SESSION['loggato']==1)
                         <button id='cercaXmatricolaButton' class='btn btn-xs btn-info buttonFilter'>GO</button>
                         </div>
                     </li>
+					<li>
+                        <div class='form-group'>
+                        <label for='cercaXnote'>Testo in Note</label><br>
+                        <input id='cercaXnote' type='text' class='filtro' value='' data-toggle='tooltip' data-placement='bottom' title='Inserisci il testo da cercare nelle note'>
+                        <button id='cercaXnote' class='btn btn-xs btn-info buttonFilter'>GO</button>
+                        </div>
+                    </li>
                     <li>
                         <div class='form-group'>
                         <label for='cercaXdata'>Data:</label><br>
@@ -69,7 +77,7 @@ if($_SESSION['loggato']==1)
                         <input type='text' id='cercaXdataRange' class='dataR'>
                         <button id='cercaXdataButtonRange' class='btn btn-xs btn-info buttonFilter'>GO</button>
                         </div>
-                    </li>    
+                    </li>
                   </ul>
                  </li>";
                  if($utente->admin==1) echo "<li><button id='adminConsole' class='btn btn-sm btn-danger'>Amministrazione</button></li>";
