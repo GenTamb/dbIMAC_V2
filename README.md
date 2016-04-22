@@ -2,8 +2,8 @@
 Gestionale per procedura IMAC - Installazione Movimentazione Aggiunta Configurazione
 
 STATO AVANZAMENTO LAVORI: 100%
-Release Candidate 4
-In corso: debug e testing
+Release Candidate 5
+
 LINGUA PROGETTO: ITALIANA 
 
 Parte del mio lavoro all'Helpdesk di Regione Campania prevede il controllo delle procedure di censimento, riassegnazione e dismissione
